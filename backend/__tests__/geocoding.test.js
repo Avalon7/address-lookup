@@ -26,6 +26,24 @@ describe('geocodeAddress', () => {
     expect(result).toEqual({ latitude: -33.42968, longitude: 149.56705 });
   });
 
+  it('uppercases the address before querying the NSW API', async () => {
+    // The NSW Geocoded Addressing API is case-sensitive and only matches
+    // uppercase addresses, so lowercase input must be normalised.
+    nock(BASE)
+      .get((path) => path.includes('346+PANORAMA+AVENUE+BATHURST') || path.includes('346%20PANORAMA%20AVENUE%20BATHURST'))
+      .reply(200, {
+        type: 'FeatureCollection',
+        features: [{
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [149.56705, -33.42968, 0] },
+          properties: {}
+        }]
+      });
+
+    const result = await geocodeAddress('346 panorama avenue bathurst');
+    expect(result).toEqual({ latitude: -33.42968, longitude: 149.56705 });
+  });
+
   it('rejects with NOT_FOUND when address has no results', async () => {
     // An empty features array means the NSW API found no match for the address.
     // geocodeAddress should surface this as a typed error so the handler can
