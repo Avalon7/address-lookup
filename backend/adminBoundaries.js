@@ -1,8 +1,11 @@
 const { httpsGet } = require('./httpClient');
 
-const BASE_URL = 'https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Administrative_Boundaries_Theme/FeatureServer';
+const DEFAULT_ADMIN_BOUNDARIES_URL = 'https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Administrative_Boundaries_Theme/FeatureServer';
 
 function buildQuery(layer, lat, lng) {
+  // Read at call time so NSW_ADMIN_BOUNDARIES_URL can be overridden via a
+  // Lambda env var to simulate external API failures during testing.
+  const BASE_URL = process.env.NSW_ADMIN_BOUNDARIES_URL || DEFAULT_ADMIN_BOUNDARIES_URL;
   const params = new URLSearchParams({
     geometry: `${lng}, ${lat}`,
     geometryType: 'esriGeometryPoint',

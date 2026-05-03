@@ -1,8 +1,12 @@
 const { httpsGet } = require('./httpClient');
 
-const BASE_URL = 'https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Geocoded_Addressing_Theme/FeatureServer/1/query';
+const DEFAULT_GEOCODING_URL = 'https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Geocoded_Addressing_Theme/FeatureServer/1/query';
 
 async function geocodeAddress(address) {
+  // Read at call time (not module load) so NSW_GEOCODING_URL can be overridden
+  // via a Lambda env var to simulate external API failures during testing.
+  const BASE_URL = process.env.NSW_GEOCODING_URL || DEFAULT_GEOCODING_URL;
+
   // The NSW API only matches uppercase addresses — normalise before querying.
   const params = new URLSearchParams({
     where: `address = '${address.toUpperCase()}'`,

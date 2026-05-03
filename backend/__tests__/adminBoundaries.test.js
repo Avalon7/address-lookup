@@ -27,6 +27,23 @@ describe('getAdminBoundaries', () => {
     expect(result).toEqual({ suburb: 'BATHURST', stateElectoralDistrict: 'BATHURST' });
   });
 
+  it('uses NSW_ADMIN_BOUNDARIES_URL env var when set', async () => {
+    process.env.NSW_ADMIN_BOUNDARIES_URL = 'https://mock-admin.example.com/FeatureServer';
+
+    nock('https://mock-admin.example.com')
+      .get(/FeatureServer\/2/).query(true)
+      .reply(200, { type: 'FeatureCollection', features: [{ type: 'Feature', geometry: null, properties: { suburbname: 'BATHURST' } }] });
+
+    nock('https://mock-admin.example.com')
+      .get(/FeatureServer\/4/).query(true)
+      .reply(200, { type: 'FeatureCollection', features: [{ type: 'Feature', geometry: null, properties: { districtname: 'BATHURST' } }] });
+
+    const result = await getAdminBoundaries(-33.42968, 149.56705);
+    expect(result).toEqual({ suburb: 'BATHURST', stateElectoralDistrict: 'BATHURST' });
+
+    delete process.env.NSW_ADMIN_BOUNDARIES_URL;
+  });
+
   it('resolves with nulls when features are empty', async () => {
     // Coordinates may fall outside a boundary (e.g. remote area with no suburb
     // polygon). The function should return null gracefully rather than throwing.

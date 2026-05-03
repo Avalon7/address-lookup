@@ -1,0 +1,16 @@
+{
+  "name": "address-lookup",
+  "version": "1.0.0",
+  "description": "A fullstack solution that resolves geographic and administrative information for a given NSW address using public Spatial Services REST APIs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "esbuild": "^0.28.0"
+  }
+}

@@ -1,11 +1,10 @@
 const { geocodeAddress } = require('./geocoding');
 const { getAdminBoundaries } = require('./adminBoundaries');
 
-// Wildcard CORS header required so the React frontend can call this Lambda
-// Function URL directly from the browser.
+// The Lambda Function URL CORS config (set in CDK) adds Access-Control-Allow-Origin
+// automatically — duplicating it here causes browsers to reject the response.
 const HEADERS = {
-  'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin': '*'
+  'Content-Type': 'application/json'
 };
 
 // Builds the Lambda response envelope expected by both the Lambda runtime

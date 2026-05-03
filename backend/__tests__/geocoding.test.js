@@ -44,6 +44,25 @@ describe('geocodeAddress', () => {
     expect(result).toEqual({ latitude: -33.42968, longitude: 149.56705 });
   });
 
+  it('uses NSW_GEOCODING_URL env var when set', async () => {
+    // The env var is read inside the function (not at module load time) so
+    // setting it here is sufficient — no module reloading needed.
+    process.env.NSW_GEOCODING_URL = 'https://mock-geocoding.example.com/query';
+
+    nock('https://mock-geocoding.example.com')
+      .get('/query')
+      .query(true)
+      .reply(200, {
+        type: 'FeatureCollection',
+        features: [{ type: 'Feature', geometry: { type: 'Point', coordinates: [149.56705, -33.42968, 0] }, properties: {} }]
+      });
+
+    const result = await geocodeAddress('346 PANORAMA AVENUE BATHURST');
+    expect(result).toEqual({ latitude: -33.42968, longitude: 149.56705 });
+
+    delete process.env.NSW_GEOCODING_URL;
+  });
+
   it('rejects with NOT_FOUND when address has no results', async () => {
     // An empty features array means the NSW API found no match for the address.
     // geocodeAddress should surface this as a typed error so the handler can
