@@ -10,7 +10,16 @@ function httpsGet(url) {
       res.on('data', (chunk) => { body += chunk; });
       res.on('end', () => {
         try {
-          resolve(JSON.parse(body));
+          const json = JSON.parse(body);
+          // Treat any non-2xx response as an external API failure so callers
+          // always get a rejection rather than an unexpected response body shape.
+          if (res.statusCode < 200 || res.statusCode >= 300) {
+            const err = new Error(`External API returned status ${res.statusCode}`);
+            err.code = 'EXTERNAL_API_ERROR';
+            reject(err);
+          } else {
+            resolve(json);
+          }
         } catch (err) {
           reject(err);
         }
