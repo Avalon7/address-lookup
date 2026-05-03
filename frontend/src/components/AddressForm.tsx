@@ -5,28 +5,32 @@ interface AddressFormProps {
   disabled?: boolean;
 }
 
-// disabled prop is set to true while a lookup is in flight to prevent
-// duplicate submissions.
 export function AddressForm({ onSubmit, disabled }: AddressFormProps) {
   const [value, setValue] = useState('');
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // Trim here so the hook always receives a clean string regardless of
-    // what the user typed.
     onSubmit(value.trim());
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder="Enter NSW address"
-        disabled={disabled}
-      />
-      <button type="submit" disabled={disabled}>Search</button>
+    <form onSubmit={handleSubmit} className="form">
+      <label htmlFor="address-input" className="form__label">Street address</label>
+      <div className="form__row">
+        <input
+          id="address-input"
+          className="input"
+          type="text"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder="e.g. 346 PANORAMA AVENUE BATHURST"
+          disabled={disabled}
+          autoComplete="street-address"
+        />
+        <button className="button" type="submit" disabled={disabled}>
+          {disabled ? 'Searching…' : 'Search'}
+        </button>
+      </div>
     </form>
   );
 }
