@@ -12,7 +12,7 @@ export class AddressLookupStack extends cdk.Stack {
     // no need to zip node_modules manually before deploying.
     const handler = new NodejsFunction(this, 'Handler', {
       runtime: lambda.Runtime.NODEJS_20_X,
-      entry: path.join(__dirname, '../../backend/handler.js'),
+      entry: path.join(__dirname, '../../backend/handler.ts'),
       handler: 'handler',
       timeout: cdk.Duration.seconds(30),
       description: 'Resolves an NSW address to geographic and administrative boundary data',
