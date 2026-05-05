@@ -21,7 +21,7 @@ async function geocodeAddress(address: string): Promise<{ latitude: number; long
   const data = await httpsGet<GeocodingResponse>(`${BASE_URL}?${params}`);
 
   if (!data.features || data.features.length === 0) {
-    throw new AppError('Address not found', 'NOT_FOUND');
+    throw new AppError('Address not found in NSW Geocoded Addressing database', 'GEOCODING_NOT_FOUND');
   }
 
   const [longitude, latitude] = data.features[0].geometry.coordinates;

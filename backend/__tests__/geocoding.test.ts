@@ -55,11 +55,11 @@ describe('geocodeAddress', () => {
     delete process.env.NSW_GEOCODING_URL;
   });
 
-  it('rejects with NOT_FOUND when address has no results', async () => {
+  it('rejects with GEOCODING_NOT_FOUND when address has no results', async () => {
     nock(BASE)
       .get(/NSW_Geocoded_Addressing_Theme/)
       .reply(200, { type: 'FeatureCollection', features: [] });
 
-    await expect(geocodeAddress('UNKNOWN ADDRESS')).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    await expect(geocodeAddress('UNKNOWN ADDRESS')).rejects.toMatchObject({ code: 'GEOCODING_NOT_FOUND' });
   });
 });

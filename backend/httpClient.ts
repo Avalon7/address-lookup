@@ -18,7 +18,7 @@ function httpsGet<T = unknown>(url: string): Promise<T> {
           reject(err);
         }
       });
-    }).on('error', reject);
+    }).on('error', (err: Error) => reject(new AppError(err.message, 'NETWORK_ERROR')));
   });
 }
 

@@ -18,7 +18,7 @@ describe('App', () => {
   it('shows loading state while fetching', () => {
     vi.mocked(useAddressLookup).mockReturnValue({ data: null, loading: true, error: null, lookup: vi.fn() });
     render(<App />);
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByText(/looking up address/i)).toBeInTheDocument();
   });
 
   it('shows results when data is returned', () => {
@@ -29,7 +29,7 @@ describe('App', () => {
       lookup: vi.fn(),
     });
     render(<App />);
-    expect(screen.getByText('-33.42968')).toBeInTheDocument();
+    expect(screen.getByText('-33.429680')).toBeInTheDocument();
   });
 
   it('shows error message when lookup fails', () => {

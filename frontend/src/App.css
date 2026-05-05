@@ -73,6 +73,17 @@
   cursor: not-allowed;
 }
 
+.input--error {
+  border-color: var(--nsw-brand-accent);
+}
+
+.validation-error {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--nsw-brand-accent);
+  font-weight: 500;
+}
+
 .button {
   padding: 10px 20px;
   font-size: 16px;

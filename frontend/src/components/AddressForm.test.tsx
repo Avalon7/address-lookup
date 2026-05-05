@@ -25,4 +25,58 @@ describe('AddressForm', () => {
     expect(screen.getByRole('textbox')).toBeDisabled();
     expect(screen.getByRole('button', { name: /search/i })).toBeDisabled();
   });
+
+  it('shows a validation error and does not submit when address is empty', async () => {
+    const onSubmit = vi.fn();
+    render(<AddressForm onSubmit={onSubmit} />);
+
+    await userEvent.click(screen.getByRole('button', { name: /search/i }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/please enter an address/i);
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('shows a validation error and does not submit when address is whitespace only', async () => {
+    const onSubmit = vi.fn();
+    render(<AddressForm onSubmit={onSubmit} />);
+
+    await userEvent.type(screen.getByRole('textbox'), '   ');
+    await userEvent.click(screen.getByRole('button', { name: /search/i }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/please enter an address/i);
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('shows a validation error and does not submit when address exceeds 200 characters', async () => {
+    const onSubmit = vi.fn();
+    render(<AddressForm onSubmit={onSubmit} />);
+
+    await userEvent.type(screen.getByRole('textbox'), 'A'.repeat(201));
+    await userEvent.click(screen.getByRole('button', { name: /search/i }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/200 characters/i);
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('shows a validation error and does not submit when address contains invalid characters', async () => {
+    const onSubmit = vi.fn();
+    render(<AddressForm onSubmit={onSubmit} />);
+
+    await userEvent.type(screen.getByRole('textbox'), '<script>alert(1)</script>');
+    await userEvent.click(screen.getByRole('button', { name: /search/i }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/invalid characters/i);
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('clears the validation error when the user starts typing', async () => {
+    const onSubmit = vi.fn();
+    render(<AddressForm onSubmit={onSubmit} />);
+
+    await userEvent.click(screen.getByRole('button', { name: /search/i }));
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+
+    await userEvent.type(screen.getByRole('textbox'), '3');
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
 });

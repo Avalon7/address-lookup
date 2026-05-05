@@ -1,4 +1,5 @@
 import { httpsGet } from './httpClient';
+import { AppError } from './errors';
 
 const DEFAULT_ADMIN_BOUNDARIES_URL = 'https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Administrative_Boundaries_Theme/FeatureServer';
 
@@ -30,6 +31,10 @@ async function getAdminBoundaries(lat: number, lng: number): Promise<{ suburb: s
 
   const suburb = suburbData.features?.[0]?.properties?.suburbname ?? null;
   const stateElectoralDistrict = districtData.features?.[0]?.properties?.districtname ?? null;
+
+  if (suburb === null && stateElectoralDistrict === null) {
+    throw new AppError('Location not found in NSW Admin Boundaries database', 'BOUNDARIES_NOT_FOUND');
+  }
 
   return { suburb, stateElectoralDistrict };
 }

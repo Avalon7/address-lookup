@@ -17,8 +17,8 @@ describe('ResultCard', () => {
 
   it('displays all result fields when result is provided', () => {
     render(<ResultCard result={mockResult} />);
-    expect(screen.getByText('-33.42968')).toBeInTheDocument();
-    expect(screen.getByText('149.56705')).toBeInTheDocument();
+    expect(screen.getByText('-33.429680')).toBeInTheDocument();
+    expect(screen.getByText('149.567050')).toBeInTheDocument();
     // Both suburb and stateElectoralDistrict are 'BATHURST' in this mock,
     // so use getAllByText and assert at least two occurrences are rendered.
     expect(screen.getAllByText('BATHURST')).toHaveLength(2);

@@ -20,4 +20,12 @@ describe('httpsGet', () => {
 
     await expect(httpsGet('https://example.com/data')).rejects.toMatchObject({ code: 'EXTERNAL_API_ERROR' });
   });
+
+  it('rejects with NETWORK_ERROR when the connection fails', async () => {
+    nock('https://example.com')
+      .get('/data')
+      .replyWithError('connection refused');
+
+    await expect(httpsGet('https://example.com/data')).rejects.toMatchObject({ code: 'NETWORK_ERROR' });
+  });
 });
